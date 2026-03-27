@@ -4,31 +4,30 @@
 # Opens all URLs from a file in Chrome incognito tabs (using AppleScript)
 #
 # Usage: ./open_incognito.sh [-p /path/to/folder] [-f filename.txt]
-#   -p  Directory containing the URL file (default: same folder as this script)
+#   -p  Directory containing the URL file (default: $SCRIPT_DIR or script's own directory)
 #   -f  Name of the URL file (default: tabs.txt)
 #
 # Examples:
-#   ./open_incognito.sh                             # uses ./tabs.txt
-#   ./open_incognito.sh -f work.txt                 # uses ./work.txt
+#   ./open_incognito.sh                             # uses $SCRIPT_DIR/tabs.txt
+#   ./open_incognito.sh -f work.txt                 # uses $SCRIPT_DIR/work.txt
 #   ./open_incognito.sh -p ~/Documents              # uses ~/Documents/tabs.txt
 #   ./open_incognito.sh -p ~/Documents -f work.txt  # uses ~/Documents/work.txt
 
-SCRIPT_DIR="$(dirname "$0")"
-URL_PATH=""
+URL_DIR=""
 URL_FILE=""
 
 while getopts "p:f:" opt; do
   case $opt in
-    p) URL_PATH="$OPTARG" ;;
+    p) URL_DIR="$OPTARG" ;;
     f) URL_FILE="$OPTARG" ;;
     *) echo "Usage: $0 [-p /path/to/folder] [-f filename.txt]"; exit 1 ;;
   esac
 done
 
 # Apply defaults
-URL_PATH="${URL_PATH:-$SCRIPT_DIR}"
+URL_DIR="${URL_DIR:-$SCRIPT_DIR}"
 URL_FILE="${URL_FILE:-tabs.txt}"
-URL_FULL="$URL_PATH/$URL_FILE"
+URL_FULL="$URL_DIR/$URL_FILE"
 
 if [ ! -f "$URL_FULL" ]; then
   echo "Error: URL file not found at '$URL_FULL'"
