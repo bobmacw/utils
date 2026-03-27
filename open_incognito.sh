@@ -35,10 +35,12 @@ if [ ! -f "$URL_FULL" ]; then
   exit 1
 fi
 
-# Read URLs, skipping blank lines and lines starting with #
+# Read URLs, skipping blank lines, whitespace-only lines, and lines starting with #
 URLS=()
 while IFS= read -r line; do
-  line=$(echo "$line" | xargs)  # trim whitespace
+  line="${line//[$'\t\r\n']}"  # strip tabs and carriage returns
+  line="${line## }"             # strip leading spaces
+  line="${line%% }"             # strip trailing spaces
   [[ -z "$line" || "$line" == \#* ]] && continue
   URLS+=("$line")
 done < "$URL_FULL"
